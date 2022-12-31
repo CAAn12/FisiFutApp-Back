@@ -10,7 +10,7 @@ Cliente.findById = (id, result) => {
             JSON_OBJECT(
                 'id', CONVERT(R.id, char),
                 'name', R.name,
-                'description', R.description
+                'description', R.description,
                 'image', R.image
             ) 
         ) AS roles
@@ -19,7 +19,7 @@ Cliente.findById = (id, result) => {
     ON CHR.id_cliente = C.id
     INNER JOIN roles AS R
     ON CHR.id_rol = R.id
-    WHERE id = ?
+    WHERE C.id = ?
     GROUP BY C.id
     `;
 
