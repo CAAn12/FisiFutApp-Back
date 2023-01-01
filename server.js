@@ -9,6 +9,7 @@ const port = process.env.PORT || 3000;
 const multer = require('multer');
 
 const clientesRoutes = require('./routes/clienteRoutes');
+const canchasRoutes = require('./routes/canchaRoutes');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -27,6 +28,7 @@ const upload = multer({
 });
 
 clientesRoutes(app, upload);
+canchasRoutes(app, upload);
 
 server.listen(3000, '192.168.1.8' || 'localhost', function() {
     console.log('Puerto: ' + port);
