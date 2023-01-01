@@ -1,14 +1,34 @@
 const db = require('../config/config');
 const Cancha = {};
 
+Cancha.getAll = (idCliente, result) => {
+    const sql = `
+      SELECT canchas.* FROM canchas
+      JOIN clientes ON canchas.id_gestor = clientes.id
+      JOIN clientes_roles ON clientes.id = clientes_roles.id_cliente
+      JOIN roles ON clientes_roles.id_rol = roles.id
+      WHERE roles.name = 'Gestor de canchas' AND clientes.id = ?
+    `;
+  
+    db.query(sql, [idCliente], (err, data) => {
+      if (err) {
+        console.log('Error: ', err);
+        result(err, null);
+      } else {
+        console.log('Canchas asociadas: ', data);
+        result(null, data);
+      }
+    });
+}
+
 Cancha.create = (cancha, result) => {
     const sql1 = 
     `INSERT INTO canchas 
     (
-        name, category, size, price_per_hour, id_direccion, 
+        id_gestor, name, category, size, price_per_hour, id_direccion, 
         created_at, updated_at
     ) 
-    VALUES (?, ?, ?, ?, NULL, ?, ?);
+    VALUES (?, ?, ?, ?, ?, NULL, ?, ?);
     `;
 
     const sql2 = 
@@ -30,7 +50,7 @@ Cancha.create = (cancha, result) => {
     db.query(
         sql1,
         [
-            cancha.name, cancha.category, cancha.size, cancha.price_per_hour,   
+            cancha.id_gestor, cancha.name, cancha.category, cancha.size, cancha.price_per_hour,   
             new Date(), new Date()
         ],
         (err, res) => {

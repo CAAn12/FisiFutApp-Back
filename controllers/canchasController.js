@@ -2,6 +2,20 @@ const Cancha = require('../models/cancha');
 const storage = require('../utils/cloud_storage')
 
 module.exports = {
+    async getAll(req, res) {
+        Cancha.getAll(req.params.idCliente, (err, data) => {
+          if (err) {
+            return res.status(501).json({
+              success: false,
+              message: 'Error al listar las canchas',
+              error: err
+            });
+          }
+      
+          return res.status(201).json(data);
+        });
+    },
+
     async create(req, res){
         const cancha = JSON.parse(req.body.cancha);
 
