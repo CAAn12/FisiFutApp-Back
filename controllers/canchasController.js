@@ -47,21 +47,20 @@ module.exports = {
         });
     },
 
-    async updateWithImage_principal(req, res){
+    async updateWithImage_principal(req, res) {
         const cancha = JSON.parse(req.body.cancha);
-
         const files = req.files;
 
-        if(files.length > 0){
+        if (files.length > 0){
             const path = `image_${Date.now()}`;
             const url = await storage(files[0], path);
 
-            if (url != undefined && url != null) {
+            if (url != undefined && url != null){
                 cancha.image = url;
             }
         }
-
-        Cancha.update_principal(cancha, (err, id) =>{
+        
+        Cancha.update_principal(cancha, (err, id) => {
             if (err) {
                 return res.status(501).json({
                     success: false,
@@ -74,7 +73,28 @@ module.exports = {
                 success: true,
                 message: 'La cancha se actualizó correctamente',
                 data: `${id}`
-            }); 
+            });
+        });
+    },
+
+    async updateWithoutImage_principal(req, res) {
+        const cancha = req.body;
+        console.log('ESTOY RECIBIENDO DE CANCHA: ' + JSON.stringify(cancha));
+        
+        Cancha.update_principal(cancha, (err, id) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Error en la actualización de la cancha',
+                    error: err
+                });
+            }
+
+            return res.status(201).json({
+                success: true,
+                message: 'La cancha se actualizó correctamente',
+                data: `${id}`
+            });
         });
     },
 

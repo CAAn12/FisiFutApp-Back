@@ -92,46 +92,40 @@ Cancha.create = (cancha, result) => {
 }
 
 Cancha.update_principal = (cancha, result) => {
-    const sql1 = 
+    const sql1 =
     `
-    UPDATE canchas SET name = ?, category = ?, size = ?, price_per_hour = ?, updated_at = ?
-    WHERE id = ?
+    UPDATE canchas SET name = ?, category = ?, size = ?, price_per_hour = ?, updated_at = ? WHERE id = ?
     `;
 
     const sql2 = 
     `
-    UPDATE canchas_imagenes SET 
+    UPDATE canchas_imagenes SET image = ?
     WHERE id_cancha = ? LIMIT 1
     `;
 
     db.query(
-        sql1,
-        [cancha.name, cancha.category, cancha.size, 
-        cancha.price_per_hour, new Date(), cancha.id],
+        sql1, 
+        [
+            cancha.name, cancha.category, cancha.size, 
+            cancha.price_per_hour, new Date(), cancha.id
+        ],
         (err, res) => {
-            if(err){
+            if (err) {
                 console.log('Error: ', err);
                 result(err, null);
-            }
-            else{
+            } else {
                 console.log('ID de la cancha actualizada: ', cancha.id);
-                result(null, cancha.id);
-
-                db.query(
-                    sql2,
-                    cancha.id,
-                    (err, res) => {
-                        if(err){
-                            console.log('Error: ', err);
-                        }
-                        else{
-                            console.log(res);
-                        }
-                    }   
-                )
+                db.query(sql2, [cancha.image, cancha.id], (err, res) => {
+                    if (err) {
+                        console.log('Error: ', err);
+                        result(err, null);
+                    } else {
+                        result(null, cancha.id);
+                    }
+                });
             }
         }
-    )
+    );
 }
 
 Cancha.delete = (id, result) => {
